@@ -1,0 +1,31 @@
+function res = FKernel(size_Xk)
+
+res.adjoint = 0;
+
+
+zerosCube = zeros(size_Xk);
+kx = zerosCube; ky = zerosCube; kz = zerosCube;
+
+    
+for count = 1:size_Xk(1)
+    ky(count,:,:) = size_Xk,2)/2 - count + 1;
+end
+
+for count = 1:size_Xk(2)
+    kx(:,count,:) = count - (size(Xk,1)/2 + 1);
+end
+
+for count = 1:size_Xk(3)
+    kz(:,:,count) = count - (size(Xk,3)/2 + 1);
+end
+
+
+theta = 0;
+k2 = kx.^2+ky.^2+kz.^2;
+k2(k2==0) = eps;
+res.kernel = 1/3 - (kz*cos(theta) - ky*sin(theta)).^2./k2;
+
+
+res = class(res,'FKernel');
+
+end

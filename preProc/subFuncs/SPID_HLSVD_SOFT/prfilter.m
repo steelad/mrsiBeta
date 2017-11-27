@@ -1,0 +1,1 @@
+function[filteredsignal]=prfilter(signal,t,allfreq,alldamp,allampl,allphas,freqbound1,freqbound2)[index]=find((((allfreq)<freqbound2)) & ((allfreq)>freqbound1));freq_s=allfreq(index);damp_s=alldamp(index);ampl_s=allampl(index);phas_s=allphas(index);[vrec]=reconsd(t,freq_s,damp_s,ampl_s,phas_s);signal = reshape(signal,1,length(t));filteredsignal=signal-vrec;

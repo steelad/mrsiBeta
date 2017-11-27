@@ -1,0 +1,16 @@
+function [eampl,edamp,egauss,efreq,ephas,eeddy] = ...
+    estimate_CR_bounds(ampl,damp,freq,phas,gauss,eddy,t,dbase,...
+                       filter_information,original,recon,baseline,...
+                       loline,galine,voline);
+% Function that estimates CR bounds using the optimal estimated parameters
+
+
+% estimating the standard deviation based on the residual after fit
+sigma   = std(original-recon-baseline);
+
+
+% compute CR bounds as if the estimated values are true values
+
+[eampl,edamp,egauss,efreq,ephas,eeddy] = ...
+    calculate_CR_bounds(ampl,damp,freq,phas,gauss,eddy,t,sigma^2,dbase,...
+                        filter_information,loline,galine,voline);

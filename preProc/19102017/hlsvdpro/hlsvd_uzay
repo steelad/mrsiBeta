@@ -1,0 +1,11 @@
+phass
+tstep  = 0.8;
+times  = 0:tstep:(512-1)*tstep;
+ K = 1i * 2 *pi
+
+for icount=1:abc.nsv_found
+xpon   = abc.amplitudes(icount)*exp(times/abc.damping_factors(icount) + (K*( abc.frequencies(icount)*times+abc.phases(icount)/360)));
+
+recon(icount,:)  = xpon' ;
+end
+recon(~isfinite(recon))=0;

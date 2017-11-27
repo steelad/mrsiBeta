@@ -1,0 +1,112 @@
+function visualize_LCModel(subj,filename,PATH);
+%%
+clear all
+%%
+%subj = 'HV_105';
+%%';
+if isempty(PATH)~=0
+    cd(strcat(PATH,subj))
+end
+if isempty(filename) ~=0
+    load(strcat(subj,'_finalWksp512_noAvg.mat'),'meta_mask','numImgs')
+end
+addpath(genpath('/vols/Scratch/asteel/uzayScripts/MRspav1.5c/'))
+addpath(genpath('/vols/Scratch/asteel/uzayScripts/scripts_templates/scripts/'))
+% %%
+ tempMask = meta_mask;
+ tempMask(:,18) = zeros(48,1);
+ tempMask(:,33) = zeros(48,1);
+% tempMask(29,32) = 0;
+%%
+tt = [];
+for i = size(tempMask,2):-1:1;
+    temp = tempMask(:,i);
+    tt = find(temp == 1);
+    if isempty(tt) == 0
+        break
+    end
+end
+% %% adjust mask as needed
+% tempMask(min(tt),:) = zeros(1,size(tempMask,2)); 
+% tempMask(max(tt),:) = zeros(1,size(tempMask,2)); 
+% tempMask(:,[i-1 1]) = zeros(size(tempMask,1),2);
+
+%%
+
+metab_map=zeros(48,48,27,numImgs);
+ 
+ metab_map2=zeros(48,48,27,numImgs);
+ metab_map1=zeros(48,48,25,numImgs);
+ gluGabaCorrMap=zeros(48,48,numImgs);
+ lcm_output_struct = cell(48,48,numImgs);
+ for i=1:48
+     for k=1:48
+         for MM = 1:numImgs
+          if(tempMask(i,k)==1)
+         B=[ subj '_' int2str(i) '_' int2str(k) '_limVOI_noAvg_'...
+             int2str(MM) '_lcm/lcm_1.COORD']
+         skip = 0;
+         [lcmodelresults,checkFATAL]=readcoord(B);
+         for ii=1:25
+         if (lcmodelresults.metabconc(22).SD < 50) || checkFATAL ~= 1
+         lcm_output_struct(i,k,MM) = lcmodelresults;    
+         metab_map(i,k,ii,MM)=lcmodelresults.metabconc(ii).absconc;
+         metab_map2(i,k,ii,MM)=lcmodelresults.metabconc(ii).relconc;
+         metab_map1(i,k,ii,MM)=lcmodelresults.metabconc(ii).SD;
+         
+% 
+            
+         else
+              metab_map(i,k,:,MM)=0;
+         end
+         end
+         if checkFATAL ~= 1
+         C=[ subj '_' int2str(i) '_' int2str(k) ...
+             '_limVOI_noAvg_' int2str(MM) '_lcm/lcm_1.PRINT']
+            corrGabaGlu = getGluGabaCorr(C);
+            gluGabaCorrMap(i,k,MM) = corrGabaGlu;
+         
+            metab_map(i,k,26,MM)=lcmodelresults.SN;
+            metab_map(i,k,27,MM)=lcmodelresults.linewidth;
+            metab_map2(i,k,26,MM)=lcmodelresults.SN;
+            metab_map2(i,k,27,MM)=lcmodelresults.linewidth;
+         end
+         
+        
+         end
+         end
+     end
+ end
+ 
+ %%
+
+ 
+ 
+% figure;
+I2_mcycle = imresize(metab_map,5,'nearest');
+I2_vapor = imresize(metab_map1,5,'nearest');
+%h = ones(8,8) / 64;
+h=fspecial('gaussian',[8 8]);
+I3_mcycle= imfilter(I2_mcycle,h);
+I3_vapor= imfilter(I2_vapor,h);
+%%
+%%
+figure;
+imagesc((real(gluGabaCorrMap(:,:,1))))
+axis square
+axis off
+
+%%
+figure;
+imagesc((real((metab_map2(:,:,8,1)))))
+axis square
+axis off
+%%
+figure;
+imagesc(fliplr(real(imrotate(metab_map2(:,:,5),116))))
+axis square
+axis off
+%%
+
+save('metab_maps_limVOI_noAvg_LB0.mat','metab_map','metab_map1','metab_map2','gluGabaCorrMap','lcm_output_struct')
+%%
