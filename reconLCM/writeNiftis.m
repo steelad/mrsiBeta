@@ -19,7 +19,7 @@ else
 end
 
 hdr1 = spm_dicom_headers(P1);
-[~] = MRSI_write_wrapper(hdr1,metab_map,[subj '_' outputName '_MAP2.nii']);
+[~] = MRSI_write_wrapper(hdr1,metab_map2,[subj '_' outputName '_MAP2.nii']);
 [~] = MRSI_write_wrapper(hdr1,metab_map1,[subj '_' outputName '_MAP1.nii']);
 [~] = MRSI_write_wrapper(hdr1,gluGabaCorrMap,[subj '_' outputName '_GG.nii']);
 [~] = MRSI_write_wrapper(hdr1,LUT,[subj '_' outputName '_LUT.nii']);
