@@ -1,9 +1,9 @@
-function [out] = MRSI_write_wrapper(hdr,metab_map,outname)
+function [out] = MRSI_write_wrapper(hdr,metab_map,vSHIFT,outname)
 %%
 
 [~,other]    = select_tomographic_images(hdr);
 [spect,~]      = select_spectroscopy_images(other);
-fspe = convert_spectroscopy(spect,'flat','nii',metab_map,outname);
+fspe = convert_spectroscopy(spect,'flat','nii',metab_map,vSHIFT,outname);
 
 
 out.files = [fspe(:)];
@@ -12,14 +12,14 @@ if isempty(out.files)
 end;
 return;
 %%
-function fnames = convert_spectroscopy(hdr,root_dir,format,metab_map,outname)
+function fnames = convert_spectroscopy(hdr,root_dir,format,metab_map,vSHIFT,outname)
 fnames = cell(length(hdr),1);
 for i=1:length(hdr),
-    fnames{i} = write_spectroscopy_volume(hdr(i),root_dir,format,metab_map,outname);
+    fnames{i} = write_spectroscopy_volume(hdr(i),root_dir,format,metab_map,vSHIFT,outname);
 end;
 return;
 
-function fname = write_spectroscopy_volume(hdr,root_dir,format,metab_map,outname)
+function fname = write_spectroscopy_volume(hdr,root_dir,format,metab_map,vSHIFT,outname)
 % Output filename
 %-------------------------------------------------------------------
 fname = getfilelocation(hdr{1}, root_dir,'S',format);
@@ -169,7 +169,9 @@ N.mat0 = mat;
 cc = metab_map;
 cc3 = imrotate(cc,-90);
 %cc3 = fliplr(cc3);
- cc3 = circshift(cc3,2,1);
+ cc3 = circshift(cc3,vSHIFT(1),1);
+ cc3 = circshift(cc3,vSHIFT(2),1);
+% cc3 = circshift(cc3,-2,2);
 %  cc3 = circshift(cc3,9,1); % sets ydir pixel shift.  Need to play to find best adjustment
 temp1 = zeros(dim);
 for i = 1:size(temp1,4)

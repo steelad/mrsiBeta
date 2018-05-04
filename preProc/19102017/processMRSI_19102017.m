@@ -169,7 +169,7 @@ end
 
 if ave == 1
     figure
-    plot((real((fft((squeeze(conj(dw_mean_hlsvd(22,19,:)))))))));
+    plot((real((fft((squeeze(conj(dw_mean_hlsvd(25,25,:)))))))));
     saveas(gcf,['post_hlsvd_19_22_' outName '.png'],'png')
     close gcf
 end

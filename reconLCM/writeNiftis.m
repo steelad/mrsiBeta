@@ -1,4 +1,4 @@
-function writeNiftis(subj,metab_map,outputName,sel)
+function writeNiftis(subj,metab_map,outputName,sel,SHIFT)
 %%
 % This program takes the metabolite maps file and writes out metab_map2 and look up table.
 % Should also include a wrapper to write read and write the rilled look up
@@ -17,12 +17,12 @@ else
     P1 = sel;
     disp(P1);
 end
-
 hdr1 = spm_dicom_headers(P1);
-[~] = MRSI_write_wrapper(hdr1,metab_map2,[subj '_' outputName '_MAP2.nii']);
-[~] = MRSI_write_wrapper(hdr1,metab_map1,[subj '_' outputName '_MAP1.nii']);
-[~] = MRSI_write_wrapper(hdr1,gluGabaCorrMap,[subj '_' outputName '_GG.nii']);
-[~] = MRSI_write_wrapper(hdr1,LUT,[subj '_' outputName '_LUT.nii']);
+
+[~] = MRSI_write_wrapper(hdr1,metab_map2,SHIFT,[subj '_' outputName '_MAP2.nii']);
+[~] = MRSI_write_wrapper(hdr1,metab_map1,SHIFT,[subj '_' outputName '_MAP1.nii']);
+[~] = MRSI_write_wrapper(hdr1,gluGabaCorrMap,SHIFT,[subj '_' outputName '_GG.nii']);
+[~] = MRSI_write_wrapper(hdr1,LUT,SHIFT,[subj '_' outputName '_LUT.nii']);
 %%
 
 delete *_MAP.mat *_LUT.mat

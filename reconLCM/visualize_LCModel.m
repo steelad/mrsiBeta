@@ -7,7 +7,7 @@ function visualize_LCModel(subj,filename,PATH);
 if isempty(filename) ~=0
     load(['../' subj,'_finalWksp512_noAvg.mat'],'dw_mean_hlsvd','meta_mask')
 else
-    load(filename,'dw_mean_hlsvd','meta_mask')
+    load(filename,'dw_mean_hlsvd','meta_mask')%,'postLipid_img'%% FIX THIS WHEN COMPLETE 18012018
 end
 %%
 if isempty(PATH)==0
@@ -30,13 +30,13 @@ end
 temp1 = length(strsplit(subj,'_'));
 tempf = dir('*_lcm');
 tempf = strsplit(tempf(1).name,'_');
-if inform(4) == 1
-    stem = strjoin(tempf(temp1+3:end),'_');
-else
+%if inform(4) == 1
+%%    stem = strjoin(tempf(temp1+3:end),'_');
+%else
     stem = strjoin(tempf(temp1+4:end),'_');
-end
+%end
 %%
-
+stem
 % %%
  tempMask = meta_mask;
 % tempMask(29,32) = 0;
@@ -61,9 +61,11 @@ CC= 1;
          if meta_mask(i,k) ~=0
             for MM = 1:inform(4)
                  
-                B=[ subj '_' int2str(i) '_' int2str(k) '_' num2str(MM) '_' stem '/lcm_1.COORD'];
+                B=[ subj '_' int2str(i) '_' int2str(k) '_' num2str(MM) '__' stem '/lcm_1.COORD'];
                 if ~exist(B)
                     B = [ subj '_' int2str(i) '_' int2str(k) '_' stem '/lcm_1.COORD'];
+			%pwd
+			%B
                     assert(exist(B,'file')== 2,'++ File not present. Something is wrong')
                 end
                
@@ -91,7 +93,7 @@ CC= 1;
                      end
                  end
                 if checkFATAL ~= 1
-                    C=[ subj '_' int2str(i) '_' int2str(k) '_' num2str(MM) '_' stem '/lcm_1.PRINT'];
+                    C=[ subj '_' int2str(i) '_' int2str(k) '_' num2str(MM) '__' stem '/lcm_1.PRINT'];
                 if ~exist(C)
                     C = [ subj '_' int2str(i) '_' int2str(k) '_' stem '/lcm_1.PRINT'];
                     assert(exist(B,'file')== 2,'++ File not present. Something is wrong')

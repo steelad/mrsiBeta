@@ -3,7 +3,7 @@ function readMeasFiles_HVs(subjs,PATH)
 
 for SUBJ = 1:length(subjs)
     cd(PATH)
-    if isempty(subjs) == 1
+    if isempty(subjs{SUBJ}) == 1
         SNUM = 'subj'
     else
         SNUM = subjs{SUBJ};

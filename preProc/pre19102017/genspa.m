@@ -8,13 +8,18 @@ load('semi_laser_30_33.spa','-mat');
 
     load(filename,'-mat')
 system(['mkdir ' outSuffix])
-
+try 
+    size(meta_mask);
+catch
+    load([subj '_finalWksp512.mat'],'meta_mask')
+end
 %%
 numImgs = size(dw_mean_hlsvd,4);
 %%
 
 %% Generate spa file for each voxel in each image
 
+            img_water = rot90(img_water);
  for MM = 1:numImgs
      disp(['++ Starting ' num2str(MM)])
  for i=1:48
@@ -22,7 +27,6 @@ numImgs = size(dw_mean_hlsvd,4);
          if(meta_mask(i,k)==1)
             aa=(conj(squeeze(dw_mean_hlsvd(i,k,:,MM))));
             aa = rot90(aa);
-            img_water = rot90(img_water);
             data.metab=(conj((aa(1:512)')));
  
          
